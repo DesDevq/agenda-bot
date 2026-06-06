@@ -1,0 +1,1 @@
+Gestion del tiempo para estudiantes. La matriz de Eisenhower divide las tareas en 4 cuadrantes: urgente e importante hacer ya, importante pero no urgente planificar, urgente pero no importante delegar, ni urgente ni importante eliminar. El principio de Pareto dice que el 20% del esfuerzo produce el 80% de los resultados.

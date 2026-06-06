@@ -1,0 +1,1 @@
+Memoria y repaso espaciado. El repaso espaciado es una de las tecnicas mas efectivas segun la neurociencia. Distribuyes el repaso en intervalos crecientes: al dia siguiente, en 3 dias, en una semana, en un mes. La curva del olvido muestra que olvidamos el 70% de lo aprendido en 24 horas sin repasar. Herramientas como Anki usan este principio.

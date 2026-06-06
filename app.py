@@ -32,7 +32,7 @@ mistral_client = Mistral(api_key=os.getenv("MISTRAL_API_KEY"))
 
 def consultar_asistente(pregunta: str) -> str:
     contexto_tareas = buscar_tareas_similares(pregunta)
-    contexto_docs = buscar_en_documentos(pregunta)
+    contexto_docs, fuentes = buscar_en_documentos(pregunta)
 
     response = mistral_client.chat.complete(
         model="mistral-large-latest",
@@ -47,7 +47,15 @@ Información de documentos subidos:
 Pregunta: {pregunta}
 Responde en español de forma clara y concisa."""}]
     )
-    return response.choices[0].message.content
+
+    respuesta = response.choices[0].message.content
+
+    if fuentes:
+        fuentes_unicas = list(set(fuentes))
+        citas = "\n".join([f"- 📄 {f}" for f in fuentes_unicas])
+        respuesta += f"\n\n**Fuentes consultadas:**\n{citas}"
+
+    return respuesta
 
 
 def leer_archivo(f) -> str:
@@ -68,7 +76,7 @@ def leer_archivo(f) -> str:
 
 def generar_recomendaciones() -> str:
     tareas = buscar_tareas_similares("rutina habitos actividades")
-    docs = buscar_en_documentos(
+    contexto_docs, fuentes = buscar_en_documentos(
         "productividad salud habitos ejercicio alimentacion")
 
     response = mistral_client.chat.complete(
@@ -79,24 +87,24 @@ Analiza los recordatorios y hábitos del usuario:
 {tareas}
 
 Información relevante de sus documentos:
-{docs}
+{contexto_docs}
 
 Genera recomendaciones personalizadas y específicas basadas en sus hábitos reales.
-Por ejemplo:
-- Si tiene gym por la tarde, recomienda alimentación previa
-- Si estudia de noche, recomienda técnicas de concentración
-- Si toma agua cada X horas, evalúa si es suficiente
-- Detecta conflictos entre sus hábitos y sugiere mejoras
-
 Formato de respuesta:
 - Usa emojis relevantes
 - Máximo 4 recomendaciones
 - Cada una debe ser concreta y accionable
-- Basadas SOLO en lo que el usuario tiene registrado
 - En español"""
         }]
     )
-    return response.choices[0].message.content
+
+    respuesta = response.choices[0].message.content
+    if fuentes:
+        fuentes_unicas = list(set(fuentes))
+        citas = "\n".join([f"- 📄 {f}" for f in fuentes_unicas])
+        respuesta += f"\n\n**Fuentes consultadas:**\n{citas}"
+
+    return respuesta
 
 
 # ── UI ───────────────────────────────────────────────────────────────────────

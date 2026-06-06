@@ -81,7 +81,7 @@ def guardar_documento(nombre: str, contenido: str):
         f"💾 Documento '{nombre}' guardado ({len(chunks)} chunks por párrafos)")
 
 
-def buscar_en_documentos(pregunta: str, n: int = 3) -> str:
+def buscar_en_documentos(pregunta: str, n: int = 3):
     coleccion_docs = cliente.get_or_create_collection(
         name="documentos_usuario",
         metadata={"hnsw:space": "cosine"}
@@ -93,8 +93,12 @@ def buscar_en_documentos(pregunta: str, n: int = 3) -> str:
             n_results=n
         )
         docs = results["documents"][0] if results["documents"] else []
+        metadatas = results["metadatas"][0] if results["metadatas"] else []
         if not docs:
-            return "Sin documentos relevantes."
-        return "\n".join([f"- {d}" for d in docs])
+            return "Sin documentos relevantes.", []
+
+        fuentes = [m.get("nombre", "desconocido") for m in metadatas]
+        contexto = "\n".join([f"- {d}" for d in docs])
+        return contexto, fuentes
     except Exception:
-        return "Sin documentos relevantes."
+        return "Sin documentos relevantes.", []
